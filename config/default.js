@@ -5,7 +5,8 @@ module.exports = {
         port: 8021,
         password: 'devadmin',
         profilePath: "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug/conf/sip_profiles",
-        DummyProfile: "E://DUMMY.xml"
+        DummyProfile: "E://DUMMY.xml",
+        soundFilePath: "C://"
     },
 
     Redis : {
@@ -20,5 +21,12 @@ module.exports = {
         "Port":5432,
         "Host":"127.0.0.1",
         "Database":"dvpdb"
+    },
+
+    Services : {
+
+        fileService: "http://localhost:8080/fileService",
+        profileService: "http://localhost:3000/DVP/API/1.0/CloudConfiguration/Profile/"
+
     }
 };
