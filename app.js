@@ -10,8 +10,14 @@ var dbmodel = require('./DVP-DBModels');
 var request = require('request');
 var format = require('stringformat');
 var esl = require('modesl');
+var jsxml = require("node-jsxml");
 //var http = require('http');
 
+
+var Namespace = jsxml.Namespace,
+    QName = jsxml.QName,
+    XML = jsxml.XML,
+    XMLList = jsxml.XMLList;
 
 
 
@@ -49,10 +55,6 @@ redisClient.on('message', function (channel, message) {
 
     if(channel == channelvalue) {
 
-
-
-
-
         var profilrService = config.Services.profileService;
         var url = format("{0}/{1}",profilrService,parseInt(message));
 
@@ -67,137 +69,110 @@ redisClient.on('message', function (channel, message) {
 
                 try {
                     if (nwProfile && nwProfile.ProfileName != "DUMMY") {
-                        /*
 
-                         MainIp: DataTypes.STRING,
-                         ProfileName: DataTypes.STRING,
-                         InternalIp: {type: DataTypes.STRING,unique: "compositeIndex"},
-                         InternalRtpIp: DataTypes.STRING,
-                         ExternalIp: DataTypes.STRING,
-                         ExternalRtpIp: DataTypes.STRING,
-                         Port: {type: DataTypes.INTEGER,unique: "compositeIndex"},
-                         ObjClass: DataTypes.STRING,
-                         ObjType: DataTypes.STRING,
-                         ObjCategory: DataTypes.STRING,
-                         CompanyId: DataTypes.INTEGER,
-                         TenantId: DataTypes.INTEGER
-
-                         */
+                        var profile = config.Freeswitch.DummyProfile;
                         var newprofile = config.Freeswitch.profilePath + "/" + nwProfile.ProfileName + ".xml";
 
+
                         fs.exists(newprofile, function (exists) {
+
                             if (!exists) {
-                                fs.copy(config.Freeswitch.DummyProfile, newprofile, function (err) {
-                                    if (err) {
-                                        console.error(err)
-                                    } else {
-                                        console.log("success!");
+
+                                fs.readFile(profile, "utf-8", function (err, data) {
+
+                                    var xml = new XML(data);
 
 
-                                        replace({
-                                            regex: "profilename",
-                                            replacement: nwProfile.ProfileName,
-                                            paths: [newprofile],
-                                            recursive: true,
-                                            silent: false
-                                        });
+                                    xml.attributes('name').setValue(nwProfile.ProfileName);
 
-                                        console.log("text!");
+                                    var child = xml.child("settings");
 
-                                        replace({
-                                            regex: "internalsipip",
-                                            replacement: nwProfile.InternalIp,
-                                            paths: [newprofile],
-                                            recursive: true,
-                                            silent: false
-                                        });
+                                    //var context = child.child("param");
 
-                                        replace({
-                                            regex: "internalrtpip",
-                                            replacement: nwProfile.InternalRtpIp,
-                                            paths: [newprofile],
-                                            recursive: true,
-                                            silent: false
-                                        });
 
-                                        if(nwProfile.ExternalIp) {
-                                            replace({
-                                                regex: "externalsipip",
-                                                replacement: nwProfile.ExternalIp,
-                                                paths: [newprofile],
-                                                recursive: true,
-                                                silent: false
-                                            });
-                                        }else{
-                                            replace({
-                                                regex: "externalsipip",
-                                                replacement: "auto-nat",
-                                                paths: [newprofile],
-                                                recursive: true,
-                                                silent: false
-                                            });
+                                    var descendants = child.descendants('param');
+
+                                    var value = descendants.each(function (obj, index) {
+
+                                        if (obj.attribute('name').toXMLString() == 'sip-ip') {
+                                            var val = obj.attribute('value');
+                                            obj.attribute('value').setValue(nwProfile.InternalIp);
                                         }
 
-                                        if(nwProfile.ExternalRtpIp) {
+                                        if (obj.attribute('name').toXMLString() == 'rtp-ip') {
+                                            var val = obj.attribute('value');
+                                            obj.attribute('value').setValue(nwProfile.InternalRtpIp);
+                                        }
 
-                                            replace({
-                                                regex: "externalrtpip",
-                                                replacement: nwProfile.ExternalRtpIp,
-                                                paths: [newprofile],
-                                                recursive: true,
-                                                silent: false
-                                            });
-                                        }else{
-                                            replace({
-                                                regex: "externalrtpip",
-                                                replacement: "auto-nat",
-                                                paths: [newprofile],
-                                                recursive: true,
-                                                silent: false
-                                            });
+                                        if (obj.attribute('name').toXMLString() == 'ext-sip-ip') {
+                                            var val = obj.attribute('value');
+                                            if(nwProfile.ExternalIp) {
+                                                obj.attribute('value').setValue(nwProfile.ExternalIp);
+                                            }
+                                        }
+
+                                        if (obj.attribute('name').toXMLString() == 'ext-rtp-ip') {
+                                            var val = obj.attribute('value');
+                                            if(nwProfile.ExternalIp) {
+                                                obj.attribute('value').setValue(nwProfile.ExternalRtpIp);
+                                            }
+                                        }
+
+                                        if (obj.attribute('name').toXMLString() == 'sip-port') {
+                                            var val = obj.attribute('value');
+                                            obj.attribute('value').setValue(nwProfile.port);
                                         }
 
 
-                                        replace({
-                                            regex: "profileport",
-                                            replacement: nwProfile.port,
-                                            paths: [newprofile],
-                                            recursive: true,
-                                            silent: false
-                                        });
+                                    });
+
+                                    var xmldata = xml.toXMLString();
+                                    console.log(xmldata);
 
 
-                                        /////////////////grace period before load profile////////////////////////////////////////////////
-                                        setTimeout(function() {
-                                            /*
+                                    fs.outputFile(newprofile, xmldata, function (err) {
 
-                                             var cmd = "sofia profile " + nwProfile.ProfileName + " start";
-                                             conn.api(cmd);*/
+                                        if (err) {
 
-                                            var command = format("http://{0}:8080/api/sofia? profile {1} start", config.Freeswitch.ip, nwProfile.ProfileName);
-
-                                            console.log(command);
-
-                                            request(command, function (error, response, body) {
-                                                if (!error && response.statusCode == 200) {
-                                                    console.log(body);
-                                                }
-                                                else{
-
-                                                    console.log("reload fail");
-                                                }
-                                            })
+                                            console.log(err);
 
 
-                                        }, 10*1000);
-                                    }
-                                })
+                                        } else {
+
+
+                                            setTimeout(function () {
+
+
+                                                var command = format("http://{0}:8080/api/sofia? profile {1} start", config.Freeswitch.ip, nwProfile.ProfileName);
+                                                console.log(command);
+                                                request(command, function (error, response, body) {
+                                                    if (!error && response.statusCode == 200) {
+                                                        console.log(body);
+                                                    }
+                                                    else {
+
+                                                        console.log("reload fail");
+                                                    }
+                                                })
+
+
+                                            }, 10 * 1000);
+
+                                        }
+                                    });
+                                });
                             }
                             else {
 
                                 console.log("Profile is available ---->");
                             }
+
                         });
+
+
+                        //////////////////////////////////////////////////////////////////////////////////////////////
+
+
                     }
 
                 } catch (exp) {
@@ -210,143 +185,6 @@ redisClient.on('message', function (channel, message) {
             }
 
         });
-
-/*
-        dbmodel.SipNetworkProfile.find({where: [{id: parseInt(message)}]}).complete(function (err, nwProfile) {
-
-            if (!err) {
-
-                try {
-                    if (nwProfile && nwProfile.ProfileName != "DUMMY") {
-
-                        var newprofile = config.Freeswitch.profilePath + "/" + nwProfile.ProfileName + ".xml";
-
-                        fs.exists(newprofile, function (exists) {
-                            if (!exists) {
-                                fs.copy(config.Freeswitch.DummyProfile, newprofile, function (err) {
-                                    if (err) {
-                                        console.error(err)
-                                    } else {
-                                        console.log("success!");
-
-
-                                        replace({
-                                            regex: "profilename",
-                                            replacement: nwProfile.ProfileName,
-                                            paths: [newprofile],
-                                            recursive: true,
-                                            silent: false
-                                        });
-
-                                        console.log("text!");
-
-                                        replace({
-                                            regex: "internalsipip",
-                                            replacement: nwProfile.InternalIp,
-                                            paths: [newprofile],
-                                            recursive: true,
-                                            silent: false
-                                        });
-
-                                        replace({
-                                            regex: "internalrtpip",
-                                            replacement: nwProfile.InternalRtpIp,
-                                            paths: [newprofile],
-                                            recursive: true,
-                                            silent: false
-                                        });
-
-                                        if(nwProfile.ExternalIp) {
-                                            replace({
-                                                regex: "externalsipip",
-                                                replacement: nwProfile.ExternalIp,
-                                                paths: [newprofile],
-                                                recursive: true,
-                                                silent: false
-                                            });
-                                        }else{
-                                            replace({
-                                                regex: "externalsipip",
-                                                replacement: "auto-nat",
-                                                paths: [newprofile],
-                                                recursive: true,
-                                                silent: false
-                                            });
-                                        }
-
-                                        if(nwProfile.ExternalRtpIp) {
-
-                                            replace({
-                                                regex: "externalrtpip",
-                                                replacement: nwProfile.ExternalRtpIp,
-                                                paths: [newprofile],
-                                                recursive: true,
-                                                silent: false
-                                            });
-                                        }else{
-                                            replace({
-                                                regex: "externalrtpip",
-                                                replacement: "auto-nat",
-                                                paths: [newprofile],
-                                                recursive: true,
-                                                silent: false
-                                            });
-                                        }
-
-
-                                        replace({
-                                            regex: "profileport",
-                                            replacement: nwProfile.port,
-                                            paths: [newprofile],
-                                            recursive: true,
-                                            silent: false
-                                        });
-
-
-                                        /////////////////grace period before load profile////////////////////////////////////////////////
-                                        setTimeout(function() {
-
-
-                                            var command = format("http://{0}:8080/api/sofia? profile {1} start", config.Freeswitch.ip, nwProfile.ProfileName);
-
-                                            console.log(command);
-
-                                            request(command, function (error, response, body) {
-                                                if (!error && response.statusCode == 200) {
-                                                    console.log(body);
-                                                }
-                                                else{
-
-                                                    console.log("reload fail");
-                                                }
-                                            })
-
-
-                                        }, 10*1000);
-                                    }
-                                })
-                            }
-                            else {
-
-                                console.log("Profile is available ---->");
-                            }
-                        });
-                    }
-
-                } catch (exp) {
-
-
-                    console.log(exp);
-
-
-                }
-            } else {
-
-                console.log("No profile found -> ");
-            }
-        })*/
-
-
 
     }else if(channelvalue ==  channelactivate){
 
