@@ -20,17 +20,6 @@ var Namespace = jsxml.Namespace,
     XMLList = jsxml.XMLList;
 
 
-
-
-/*
-
-    conn = new esl.Connection(config.Freeswitch.ip, config.Freeswitch.port, config.Freeswitch.password, function() {
-
-
-        console.log("Successfuly connected --->");
-    });
-*/
-
 var redisClient = redis.createClient(config.Redis.port,config.Redis.ip);
 redisClient.on('error',function(err){
     console.log('Error '.red, err);
@@ -80,95 +69,90 @@ redisClient.on('message', function (channel, message) {
 
                                 fs.readFile(profile, "utf-8", function (err, data) {
 
-                                    var xml = new XML(data);
+                                    try {
 
+                                        var xml = new XML(data);
+                                        xml.attributes('name').setValue(nwProfile.ProfileName);
+                                        var child = xml.child("settings");
+                                        var descendants = child.descendants('param');
+                                        var value = descendants.each(function (obj, index) {
 
-                                    xml.attributes('name').setValue(nwProfile.ProfileName);
-
-                                    var child = xml.child("settings");
-
-                                    //var context = child.child("param");
-
-
-                                    var descendants = child.descendants('param');
-
-                                    var value = descendants.each(function (obj, index) {
-
-                                        if (obj.attribute('name').toXMLString() == 'sip-ip') {
-                                            var val = obj.attribute('value');
-                                            obj.attribute('value').setValue(nwProfile.InternalIp);
-                                        }
-
-                                        if (obj.attribute('name').toXMLString() == 'rtp-ip') {
-                                            var val = obj.attribute('value');
-                                            obj.attribute('value').setValue(nwProfile.InternalRtpIp);
-                                        }
-
-                                        if (obj.attribute('name').toXMLString() == 'ext-sip-ip') {
-                                            var val = obj.attribute('value');
-                                            if(nwProfile.ExternalIp) {
-                                                obj.attribute('value').setValue(nwProfile.ExternalIp);
+                                            if (obj.attribute('name').toXMLString() == 'sip-ip') {
+                                                var val = obj.attribute('value');
+                                                if(nwProfile.InternalIp) {
+                                                    obj.attribute('value').setValue(nwProfile.InternalIp);
+                                                }
                                             }
-                                        }
 
-                                        if (obj.attribute('name').toXMLString() == 'ext-rtp-ip') {
-                                            var val = obj.attribute('value');
-                                            if(nwProfile.ExternalIp) {
-                                                obj.attribute('value').setValue(nwProfile.ExternalRtpIp);
+                                            if (obj.attribute('name').toXMLString() == 'rtp-ip') {
+                                                var val = obj.attribute('value');
+                                                if(nwProfile.InternalRtpIp) {
+                                                    obj.attribute('value').setValue(nwProfile.InternalRtpIp);
+                                                }
                                             }
-                                        }
 
-                                        if (obj.attribute('name').toXMLString() == 'sip-port') {
-                                            var val = obj.attribute('value');
-                                            obj.attribute('value').setValue(nwProfile.port);
-                                        }
+                                            if (obj.attribute('name').toXMLString() == 'ext-sip-ip') {
+                                                var val = obj.attribute('value');
+                                                if (nwProfile.ExternalIp) {
+                                                    obj.attribute('value').setValue(nwProfile.ExternalIp);
+                                                }
+                                            }
 
+                                            if (obj.attribute('name').toXMLString() == 'ext-rtp-ip') {
+                                                var val = obj.attribute('value');
+                                                if (nwProfile.ExternalIp) {
+                                                    obj.attribute('value').setValue(nwProfile.ExternalRtpIp);
+                                                }
+                                            }
 
-                                    });
-
-                                    var xmldata = xml.toXMLString();
-                                    console.log(xmldata);
-
-
-                                    fs.outputFile(newprofile, xmldata, function (err) {
-
-                                        if (err) {
-
-                                            console.log(err);
-
-
-                                        } else {
-
-
-                                            setTimeout(function () {
+                                            if (obj.attribute('name').toXMLString() == 'sip-port') {
+                                                var val = obj.attribute('value');
+                                                if(nwProfile.port) {
+                                                    obj.attribute('value').setValue(nwProfile.port);
+                                                }
+                                            }
 
 
-                                                var command = format("http://{0}:8080/api/sofia? profile {1} start", config.Freeswitch.ip, nwProfile.ProfileName);
-                                                console.log(command);
-                                                request(command, function (error, response, body) {
-                                                    if (!error && response.statusCode == 200) {
-                                                        console.log(body);
-                                                    }
-                                                    else {
+                                        });
 
-                                                        console.log("reload fail");
-                                                    }
-                                                })
+                                        var xmldata = xml.toXMLString();
+                                        console.log(xmldata);
+
+                                        fs.outputFile(newprofile, xmldata, function (err) {
+
+                                            if (err) {
+                                                console.log(err);
+
+                                            } else {
 
 
-                                            }, 10 * 1000);
+                                                setTimeout(function () {
 
-                                        }
-                                    });
+                                                    var command = format("http://{0}:8080/api/sofia? profile {1} start", config.Freeswitch.ip, nwProfile.ProfileName);
+                                                    console.log(command);
+                                                    request(command, function (error, response, body) {
+                                                        if (!error && response.statusCode == 200) {
+                                                            console.log(body);
+                                                        }
+                                                        else {
+
+                                                            console.log("reload fail");
+                                                        }
+                                                    })
+                                                }, 10 * 1000);
+                                            }
+                                        });
+                                    }catch(exx){
+
+                                        console.log(exx);
+                                    }
                                 });
                             }
                             else {
 
                                 console.log("Profile is available ---->");
                             }
-
                         });
-
 
                         //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -186,10 +170,10 @@ redisClient.on('message', function (channel, message) {
 
         });
 
-    }else if(channelvalue ==  channelactivate){
+    }else if(channel ==  channelactivate){
 
 
-    }else if(channelvalue == downloadfile){
+    }else if(channel == downloadfile){
 
         if(message) {
 
@@ -198,10 +182,11 @@ redisClient.on('message', function (channel, message) {
                 var fileData = JSON.parse(message);
 
                 var companyLocation = format("{0}_{1}",fileData.tenent, fileData.company);
-                var fileLocation = format("{0}/{1}/{2}.{3}",config.Freeswitch.soundFilePath,companyLocation,fileData.filename,fileData.ext)
-                var remoteFileLocation = format("{0}/{1}",config.Services.fileService,fileData.filename);
+                var fileLocation = format("{0}{1}",config.Freeswitch.soundFilePath,companyLocation);
+                var filepath = format("{0}/{1}", fileLocation, fileData.filename);
+                var remoteFileLocation = format("{0}/{1}",config.Services.fileService,fileData.id);
 
-                request(remoteFileLocation).pipe(fs.createWriteStream(fileLocation))
+                request(remoteFileLocation).pipe(fs.createWriteStream(filepath)).on('error', function(e){console.log(e)});
 
             }
             catch(ex){
