@@ -2,11 +2,9 @@
  * Created by a on 3/15/2015.
  */
 var fs = require('fs-extra');
-var esl = require('modesl');
 var replace = require("replace");
 var redis = require('redis');
 var config = require('config');
-var dbmodel = require('./DVP-DBModels');
 var request = require('request');
 var format = require('stringformat');
 var esl = require('modesl');
@@ -32,7 +30,6 @@ var downloadfile = "CSCOMMAND:"+config.Freeswitch.id+":downloadfile";
 redisClient.subscribe(channelvalue);
 redisClient.subscribe(channelactivate);
 redisClient.subscribe(downloadfile);
-
 
 
 
