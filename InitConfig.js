@@ -25,9 +25,9 @@ var Namespace = jsxml.Namespace,
 ///opt/freeswitch/conf/sip_profiles/external.xml:
 
 
-var internalProfile = format("{0}/{1}", config.Freeswitch.confPath, "/sip_profiles/external.xml" );
-var externalProfile = format("{0}/{1}", config.Freeswitch.confPath, "/sip_profiles/internal.xml" );
-var switchpath = format("{0}/{1}", config.Freeswitch.confPath, "/autoload_configs/switch.conf.xml" );
+var internalProfile = format("{0}/{1}", process.env.ConfPath, "/sip_profiles/external.xml" );
+var externalProfile = format("{0}/{1}", process.env.ConfPath, "/sip_profiles/internal.xml" );
+var switchpath = format("{0}/{1}", process.env.ConfPath, "/autoload_configs/switch.conf.xml" );
 <!-- <param name="rtp-start-port" value="16384"/> -->
 <!-- <param name="rtp-end-port" value="32768"/> -->
 
