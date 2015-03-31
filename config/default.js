@@ -2,11 +2,15 @@ module.exports = {
     Freeswitch : {
         id: 1,
         ip: 'localhost',
+        publicip: '10.10.101.10',
+        rtpstartport: 11111,
+        rtpendport: 22222,
         port: 8021,
         password: 'devadmin',
         profilePath: "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug/conf/sip_profiles",
         DummyProfile: "E://DUMMY.xml",
-        soundFilePath: "E://"
+        soundFilePath: "E://",
+        confPath: "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug/conf"
     },
 
     Redis : {
