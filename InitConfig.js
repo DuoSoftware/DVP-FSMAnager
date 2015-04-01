@@ -108,12 +108,6 @@ try {
 
 
 
-
-
-
-
-
-
 try {
 
 
@@ -149,6 +143,47 @@ try {
                                 done = true;
                             }
                         }
+
+
+                        if (obj.attribute('name').toXMLString() == 'force-register-domain') {
+                            var val = obj.attribute('value');
+                            if (process.env.ExternalIP) {
+                                obj.attribute('value').setValue(process.env.ExternalIP);
+                                done = true;
+                            }
+                        }
+
+                        if (obj.attribute('name').toXMLString() == 'force-subscription-domain') {
+                            var val = obj.attribute('value');
+                            if (process.env.ExternalIP) {
+                                obj.attribute('value').setValue(process.env.ExternalIP);
+                                done = true;
+                            }
+                        }
+
+                        if (obj.attribute('name').toXMLString() == 'force-register-db-domain') {
+                            var val = obj.attribute('value');
+                            if (process.env.ExternalIP) {
+                                obj.attribute('value').setValue(process.env.ExternalIP);
+                                done = true;
+                            }
+                        }
+
+
+
+
+
+
+
+                        //force-register-domain
+                        //force-subscription-domain
+                        //force-register-db-domain
+                        //apply-inbound-acl
+                        //apply-register-acl
+
+
+
+
 
 
                     });
@@ -208,14 +243,6 @@ try {
 
 
 
-
-
-
-
-
-
-
-
 try {
 
 
@@ -248,6 +275,32 @@ try {
                         }
 
                         if (obj.attribute('name').toXMLString() == 'ext-rtp-ip') {
+                            var val = obj.attribute('value');
+                            if (process.env.ExternalIP) {
+                                obj.attribute('value').setValue(process.env.ExternalIP);
+                                done = true;
+                            }
+                        }
+
+
+
+                        if (obj.attribute('name').toXMLString() == 'force-register-domain') {
+                            var val = obj.attribute('value');
+                            if (process.env.ExternalIP) {
+                                obj.attribute('value').setValue(process.env.ExternalIP);
+                                done = true;
+                            }
+                        }
+
+                        if (obj.attribute('name').toXMLString() == 'force-subscription-domain') {
+                            var val = obj.attribute('value');
+                            if (process.env.ExternalIP) {
+                                obj.attribute('value').setValue(process.env.ExternalIP);
+                                done = true;
+                            }
+                        }
+
+                        if (obj.attribute('name').toXMLString() == 'force-register-db-domain') {
                             var val = obj.attribute('value');
                             if (process.env.ExternalIP) {
                                 obj.attribute('value').setValue(process.env.ExternalIP);
