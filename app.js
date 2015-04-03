@@ -4,7 +4,7 @@
 var fs = require('fs-extra');
 var replace = require("replace");
 var redis = require('redis');
-var config = require('config');
+//var config = require('config');
 var request = require('request');
 var format = require('stringformat');
 var esl = require('modesl');
@@ -18,14 +18,21 @@ var Namespace = jsxml.Namespace,
     XMLList = jsxml.XMLList;
 
 
-var redisClient = redis.createClient(config.Redis.port,config.Redis.ip);
+var redishost = format("redis.{0}.{1}",process.env.envirnament, process.env.domain);
+var profilrService = format("duocloudconfig.{0}.{1}/DVP/API/1.0/CloudConfiguration/Profile",process.env.envirnament, process.env.domain);
+var profilepath = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/" );
+var soundpath = format("{0}/{1}", process.env.freeswitchpath, "/sounds/" );
+var fileservice = format("duocloudconfig.{0}.{1}/DVP/API/6.0/FIleService/FileHandler/DownloadFile",process.env.envirnament, process.env.domain);
+
+
+var redisClient = redis.createClient(redishost);
 redisClient.on('error',function(err){
     console.log('Error '.red, err);
 });
 
-var channelvalue = "CSCOMMAND:"+config.Freeswitch.id+":profile";
-var channelactivate = "CSCOMMAND:"+config.Freeswitch.id+":profileactivate";
-var downloadfile = "CSCOMMAND:"+config.Freeswitch.id+":downloadfile";
+var channelvalue = "CSCOMMAND:"+process.env.freeswitchid+":profile";
+var channelactivate = "CSCOMMAND:"+process.env.freeswitchid+":profileactivate";
+var downloadfile = "CSCOMMAND:"+process.env.freeswitchid+":downloadfile";
 
 redisClient.subscribe(channelvalue);
 redisClient.subscribe(channelactivate);
@@ -41,7 +48,7 @@ redisClient.on('message', function (channel, message) {
 
     if(channel == channelvalue) {
 
-        var profilrService = config.Services.profileService;
+        //var profilrService = config.Services.profileService;
         var url = format("{0}/{1}",profilrService,parseInt(message));
 
         request(url, function(err, response, body){
@@ -56,8 +63,8 @@ redisClient.on('message', function (channel, message) {
                 try {
                     if (nwProfile && nwProfile.ProfileName != "DUMMY") {
 
-                        var profile = config.Freeswitch.DummyProfile;
-                        var newprofile = config.Freeswitch.profilePath + "/" + nwProfile.ProfileName + ".xml";
+                        var profile = __dirname+'/DUMMY.xml';
+                        var newprofile = profilepath + "/" + nwProfile.ProfileName + ".xml";
 
 
                         fs.exists(newprofile, function (exists) {
@@ -125,7 +132,7 @@ redisClient.on('message', function (channel, message) {
 
                                                 setTimeout(function () {
 
-                                                    var command = format("http://{0}:8080/api/sofia? profile {1} start", config.Freeswitch.ip, nwProfile.ProfileName);
+                                                    var command = format("http://{0}:8080/api/sofia? profile {1} start", "localhost", nwProfile.ProfileName);
                                                     console.log(command);
                                                     request(command, function (error, response, body) {
                                                         if (!error && response.statusCode == 200) {
@@ -179,9 +186,9 @@ redisClient.on('message', function (channel, message) {
                 var fileData = JSON.parse(message);
 
                 var companyLocation = format("{0}_{1}",fileData.tenent, fileData.company);
-                var fileLocation = format("{0}{1}",config.Freeswitch.soundFilePath,companyLocation);
+                var fileLocation = format("{0}{1}",soundpath,companyLocation);
                 var filepath = format("{0}/{1}", fileLocation, fileData.filename);
-                var remoteFileLocation = format("{0}/{1}",config.Services.fileService,fileData.id);
+                var remoteFileLocation = format("{0}/{1}",fileservice,fileData.id);
 
                 request(remoteFileLocation).pipe(fs.createWriteStream(filepath)).on('error', function(e){console.log(e)});
 

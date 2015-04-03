@@ -4,7 +4,6 @@
 var fs = require('fs-extra');
 var replace = require("replace");
 var redis = require('redis');
-var config = require('config');
 var request = require('request');
 var format = require('stringformat');
 var esl = require('modesl');
@@ -25,16 +24,16 @@ var Namespace = jsxml.Namespace,
 ///opt/freeswitch/conf/sip_profiles/external.xml:
 
 
-var internalProfile = format("{0}/{1}", process.env.ConfPath, "/sip_profiles/internal.xml" );
-var externalProfile = format("{0}/{1}", process.env.ConfPath, "/sip_profiles/external.xml" );
-var switchpath = format("{0}/{1}", process.env.ConfPath, "/autoload_configs/switch.conf.xml" );
+var internalProfile = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/internal.xml" );
+var externalProfile = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/external.xml" );
+var switchpath = format("{0}/{1}", process.env.freeswitchpath, "/conf/autoload_configs/switch.conf.xml" );
 <!-- <param name="rtp-start-port" value="16384"/> -->
 <!-- <param name="rtp-end-port" value="32768"/> -->
 
 
 
 
-var profilepath = format("{0}/{1}", process.env.ConfPath, "/sip_profiles/" );
+var profilepath = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/" );
 
 
 fs.copy(__dirname+'/internal.xml', internalProfile, function (err) {
@@ -309,15 +308,6 @@ fs.copy(__dirname +'/external.xml', externalProfile, function (err) {
 
 
 })
-
-
-
-
-
-
-
-
-
 
 try {
 
