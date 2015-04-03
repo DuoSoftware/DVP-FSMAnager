@@ -37,7 +37,7 @@ var switchpath = format("{0}/{1}", process.env.ConfPath, "/autoload_configs/swit
 var profilepath = format("{0}/{1}", process.env.ConfPath, "/sip_profiles/" );
 
 
-fs.copy('/usr/local/src/fsmanager/internal.xml', internalProfile, function (err) {
+fs.copy(__dirname+'/internal.xml', internalProfile, function (err) {
     if (err) return console.error(err)
     console.log("success!")
 
@@ -180,7 +180,7 @@ fs.copy('/usr/local/src/fsmanager/internal.xml', internalProfile, function (err)
 });
 
 
-fs.copy('/usr/local/src/fsmanager/external.xml', externalProfile, function (err) {
+fs.copy(__dirname +'/external.xml', externalProfile, function (err) {
     if (err) return console.error(err)
     console.log("success!")
 
