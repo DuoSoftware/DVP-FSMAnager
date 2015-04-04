@@ -33,6 +33,7 @@ redisClient.on('error',function(err){
 var channelvalue = "CSCOMMAND:"+process.env.freeswitchid+":profile";
 var channelactivate = "CSCOMMAND:"+process.env.freeswitchid+":profileactivate";
 var downloadfile = "CSCOMMAND:"+process.env.freeswitchid+":downloadfile";
+var rescangateways = "CSCOMMAND:"+process.env.freeswitchid+ "rescangateway";
 
 redisClient.subscribe(channelvalue);
 redisClient.subscribe(channelactivate);
@@ -202,6 +203,42 @@ redisClient.on('message', function (channel, message) {
             console.log("Message is empty");
         }
 
+
+
+    }else if(channel == rescangateways){
+
+        //sofia profile external rescan reloadxml
+
+        if(message) {
+
+            try {
+
+                var fileData = JSON.parse(message);
+                var profilename = fileData.profile;
+
+                var command = format("http://{0}:8080/api/sofia? sofia profile {1} rescan reloadxml", "localhost", profilename);
+                console.log(command);
+                request(command, function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
+                        console.log(body);
+                    }
+                    else {
+
+                        console.log("reload fail");
+                    }
+                });
+
+
+
+            }
+            catch(ex){
+
+                console.log(ex);
+            }
+        }else{
+
+            console.log("Message is empty");
+        }
 
 
     }

@@ -4,6 +4,5 @@
 
 echo "run fs and node"
 
-nodejs /usr/local/src/fsmanager/InitConfig.js 
-
+nodejs /usr/local/src/fsmanager/InitConfig.js
 opt/freeswitch/bin/freeswitch
