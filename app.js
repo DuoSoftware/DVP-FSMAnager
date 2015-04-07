@@ -4,7 +4,7 @@
 var fs = require('fs-extra');
 var replace = require("replace");
 var redis = require('redis');
-//var config = require('config');
+var config = require('config');
 var request = require('request');
 var format = require('stringformat');
 var esl = require('modesl');
@@ -17,23 +17,53 @@ var Namespace = jsxml.Namespace,
     XML = jsxml.XML,
     XMLList = jsxml.XMLList;
 
-
-var redishost = format("redis.{0}.{1}",process.env.envirnament, process.env.domain);
-var profilrService = format("duocloudconfig.{0}.{1}/DVP/API/1.0/CloudConfiguration/Profile",process.env.envirnament, process.env.domain);
-var profilepath = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/" );
-var soundpath = format("{0}/{1}", process.env.freeswitchpath, "/sounds/" );
-var fileservice = format("duocloudconfig.{0}.{1}/DVP/API/6.0/FIleService/FileHandler/DownloadFile",process.env.envirnament, process.env.domain);
+var redishost,profilrService, profilepath, soundpath, fileservice, channelvalue, channelactivate, downloadfile, rescangateways, redisport = 6379;
 
 
-var redisClient = redis.createClient(redishost);
+
+
+
+
+
+
+if(process.env.envirnament && process.env.domain) {
+
+    redishost = format("redis.{0}.{1}", process.env.envirnament, process.env.domain);
+    profilrService = format("duocloudconfig.{0}.{1}/DVP/API/1.0/CloudConfiguration/Profile", process.env.envirnament, process.env.domain);
+    profilepath = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/");
+    soundpath = format("{0}/{1}", process.env.freeswitchpath, "/sounds/");
+    fileservice = format("duocloudconfig.{0}.{1}/DVP/API/6.0/FIleService/FileHandler/DownloadFile", process.env.envirnament, process.env.domain);
+
+    channelvalue = "CSCOMMAND:" + process.env.freeswitchid + ":profile";
+    channelactivate = "CSCOMMAND:" + process.env.freeswitchid + ":profileactivate";
+    downloadfile = "CSCOMMAND:" + process.env.freeswitchid + ":downloadfile";
+    rescangateways = "CSCOMMAND:" + process.env.freeswitchid + "rescangateway";
+
+}else{
+
+
+    redishost = config.Redis.ip;
+    redisport = config.Redis.port;
+    profilrService = config.Services.profileService;
+    profilepath = format("{0}/{1}", config.Freeswitch.freeswitchpath, "/conf/sip_profiles/");
+    soundpath = format("{0}/{1}", config.Freeswitch.freeswitchpath, "/sounds/");
+    fileservice = config.Services.fileService;
+
+    channelvalue = "CSCOMMAND:" + config.Freeswitch.id + ":profile";
+    channelactivate = "CSCOMMAND:" + config.Freeswitch.id + ":profileactivate";
+    downloadfile = "CSCOMMAND:" + config.Freeswitch.id + ":downloadfile";
+    rescangateways = "CSCOMMAND:" + config.Freeswitch.id + "rescangateway";
+}
+
+
+
+
+var redisClient = redis.createClient(redisport, redishost);
 redisClient.on('error',function(err){
     console.log('Error '.red, err);
 });
 
-var channelvalue = "CSCOMMAND:"+process.env.freeswitchid+":profile";
-var channelactivate = "CSCOMMAND:"+process.env.freeswitchid+":profileactivate";
-var downloadfile = "CSCOMMAND:"+process.env.freeswitchid+":downloadfile";
-var rescangateways = "CSCOMMAND:"+process.env.freeswitchid+ "rescangateway";
+
 
 redisClient.subscribe(channelvalue);
 redisClient.subscribe(channelactivate);
@@ -112,8 +142,8 @@ redisClient.on('message', function (channel, message) {
 
                                             if (obj.attribute('name').toXMLString() == 'sip-port') {
                                                 var val = obj.attribute('value');
-                                                if(nwProfile.port) {
-                                                    obj.attribute('value').setValue(nwProfile.port);
+                                                if(nwProfile.Port) {
+                                                    obj.attribute('value').setValue(nwProfile.Port);
                                                 }
                                             }
 

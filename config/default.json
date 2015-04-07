@@ -10,11 +10,12 @@
         "profilePath": "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug/conf/sip_profiles",
         "DummyProfile": "E://DUMMY.xml",
         "soundFilePath": "E://",
+        "freeswitchpath": "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug",
         "confPath": "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug/conf"
     },
 
     "Redis" : {
-        "ip": "192.168.0.68",
+        "ip": "192.168.0.70",
         "port": 6379
     },
 
