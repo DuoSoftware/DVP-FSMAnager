@@ -68,6 +68,7 @@ redisClient.on('error',function(err){
 redisClient.subscribe(channelvalue);
 redisClient.subscribe(channelactivate);
 redisClient.subscribe(downloadfile);
+redisClient.subscribe(rescangateways);
 
 
 
@@ -246,7 +247,7 @@ redisClient.on('message', function (channel, message) {
                 var fileData = JSON.parse(message);
                 var profilename = fileData.profile;
 
-                var command = format("http://{0}:8080/api/sofia? sofia profile {1} rescan reloadxml", "localhost", profilename);
+                var command = format("http://{0}:8080/api/sofia? profile {1} rescan reloadxml", "localhost", profilename);
                 console.log(command);
                 request(command, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
