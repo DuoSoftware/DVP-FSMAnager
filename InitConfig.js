@@ -24,16 +24,16 @@ var Namespace = jsxml.Namespace,
 ///opt/freeswitch/conf/sip_profiles/external.xml:
 
 
-var internalProfile = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/internal.xml" );
-var externalProfile = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/external.xml" );
-var switchpath = format("{0}/{1}", process.env.freeswitchpath, "/conf/autoload_configs/switch.conf.xml" );
+var internalProfile = format("{0}/{1}", process.env.FS_PATH, "/conf/sip_profiles/internal.xml" );
+var externalProfile = format("{0}/{1}", process.env.FS_PATH, "/conf/sip_profiles/external.xml" );
+var switchpath = format("{0}/{1}", process.env.FS_PATH, "/conf/autoload_configs/switch.conf.xml" );
 <!-- <param name="rtp-start-port" value="16384"/> -->
 <!-- <param name="rtp-end-port" value="32768"/> -->
 
 
 
 
-var profilepath = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/" );
+var profilepath = format("{0}/{1}", process.env.FS_PATH, "/conf/sip_profiles/" );
 
 
 fs.copy(__dirname+'/internal.xml', internalProfile, function (err) {
@@ -64,16 +64,16 @@ fs.copy(__dirname+'/internal.xml', internalProfile, function (err) {
 
                             if (obj.attribute('name').toXMLString() == 'ext-sip-ip') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
 
                             if (obj.attribute('name').toXMLString() == 'ext-rtp-ip') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
@@ -81,24 +81,24 @@ fs.copy(__dirname+'/internal.xml', internalProfile, function (err) {
 
                             if (obj.attribute('name').toXMLString() == 'force-register-domain') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
 
                             if (obj.attribute('name').toXMLString() == 'force-subscription-domain') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
 
                             if (obj.attribute('name').toXMLString() == 'force-register-db-domain') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
@@ -123,12 +123,12 @@ fs.copy(__dirname+'/internal.xml', internalProfile, function (err) {
                         });
 
 
-                        if (!done && process.env.ExternalIP) {
+                        if (!done && process.env.FS_EXTERNALIP) {
 
 
-                            var externalsip = format("<param name=\"ext-sip-ip\" value=\"{0}\"/>", process.env.ExternalIP);
+                            var externalsip = format("<param name=\"ext-sip-ip\" value=\"{0}\"/>", process.env.FS_EXTERNALIP);
 
-                            var externalrtp = format("<param name=\"ext-rtp-ip\" value=\"{0}\"/>", process.env.ExternalIP);
+                            var externalrtp = format("<param name=\"ext-rtp-ip\" value=\"{0}\"/>", process.env.FS_EXTERNALIP);
 
                             var xmlexternalsip = new XML(externalsip);
                             var xmlexternalrtp = new XML(externalrtp);
@@ -209,16 +209,16 @@ fs.copy(__dirname +'/external.xml', externalProfile, function (err) {
 
                             if (obj.attribute('name').toXMLString() == 'ext-sip-ip') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
 
                             if (obj.attribute('name').toXMLString() == 'ext-rtp-ip') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
@@ -227,24 +227,24 @@ fs.copy(__dirname +'/external.xml', externalProfile, function (err) {
 
                             if (obj.attribute('name').toXMLString() == 'force-register-domain') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
 
                             if (obj.attribute('name').toXMLString() == 'force-subscription-domain') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
 
                             if (obj.attribute('name').toXMLString() == 'force-register-db-domain') {
                                 var val = obj.attribute('value');
-                                if (process.env.ExternalIP) {
-                                    obj.attribute('value').setValue(process.env.ExternalIP);
+                                if (process.env.FS_EXTERNALIP) {
+                                    obj.attribute('value').setValue(process.env.FS_EXTERNALIP);
                                     done = true;
                                 }
                             }
@@ -254,13 +254,13 @@ fs.copy(__dirname +'/external.xml', externalProfile, function (err) {
 
 
 
-                        if (!done && process.env.ExternalIP) {
+                        if (!done && process.env.FS_EXTERNALIP) {
 
 
 
-                            var externalsip = format("<param name=\"ext-sip-ip\" value=\"{0}\"/>",process.env.ExternalIP);
+                            var externalsip = format("<param name=\"ext-sip-ip\" value=\"{0}\"/>",process.env.FS_EXTERNALIP);
 
-                            var externalrtp = format("<param name=\"ext-rtp-ip\" value=\"{0}\"/>",process.env.ExternalIP);
+                            var externalrtp = format("<param name=\"ext-rtp-ip\" value=\"{0}\"/>",process.env.FS_EXTERNALIP);
 
                             var xmlexternalsip = new XML(externalsip);
                             var xmlexternalrtp = new XML(externalrtp);
@@ -328,12 +328,12 @@ try {
 
 
 
-                    if (!done && process.env.StartRTPPort && process.env.EndRTPPort) {
+                    if (!done && process.env.FS_RTPSTARTPORT && process.env.FS_RTPENDPORT) {
 
 
-                        var startRTP = format("<param name=\"rtp-start-port\" value=\"{0}\"/>", process.env.StartRTPPort);
+                        var startRTP = format("<param name=\"rtp-start-port\" value=\"{0}\"/>", process.env.FS_RTPSTARTPORT);
 
-                        var endRTP = format("<param name=\"rtp-end-port\" value=\"{0}\"/>", process.env.EndRTPPort);
+                        var endRTP = format("<param name=\"rtp-end-port\" value=\"{0}\"/>", process.env.FS_RTPENDPORT);
 
                         var xmlStartRTP = new XML(startRTP);
                         var xmlEndRTP= new XML(endRTP);

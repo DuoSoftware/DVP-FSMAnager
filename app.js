@@ -22,38 +22,17 @@ var redishost,profilrService, profilepath, soundpath, fileservice, channelvalue,
 
 
 
-
-
-
-
-if(process.env.envirnament && process.env.domain) {
-
-    redishost = format("redis.{0}.{1}", process.env.envirnament, process.env.domain);
-    profilrService = format("duocloudconfig.{0}.{1}/DVP/API/1.0/CloudConfiguration/Profile", process.env.envirnament, process.env.domain);
-    profilepath = format("{0}/{1}", process.env.freeswitchpath, "/conf/sip_profiles/");
-    soundpath = format("{0}/{1}", process.env.freeswitchpath, "/sounds/");
-    fileservice = format("duocloudconfig.{0}.{1}/DVP/API/6.0/FIleService/FileHandler/DownloadFile", process.env.envirnament, process.env.domain);
-
-    channelvalue = "CSCOMMAND:" + process.env.freeswitchid + ":profile";
-    channelactivate = "CSCOMMAND:" + process.env.freeswitchid + ":profileactivate";
-    downloadfile = "CSCOMMAND:" + process.env.freeswitchid + ":downloadfile";
-    rescangateways = "CSCOMMAND:" + process.env.freeswitchid + "rescangateway";
-
-}else{
-
-
     redishost = config.Redis.ip;
     redisport = config.Redis.port;
-    profilrService = config.Services.profileService;
+    profilrService = format("{0}/DVP/API/{1}/CloudConfiguration/Profile", config.Services.profileService, config.Services.profileServiceVersion);
     profilepath = format("{0}/{1}", config.Freeswitch.freeswitchpath, "/conf/sip_profiles/");
     soundpath = format("{0}/{1}", config.Freeswitch.freeswitchpath, "/sounds/");
-    fileservice = config.Services.fileService;
+    fileservice = format("{0}/DVP/API/{1}/FIleService/FileHandler/DownloadFile", config.Services.fileService,config.Services.fileServiceVersion);
 
     channelvalue = "CSCOMMAND:" + config.Freeswitch.id + ":profile";
     channelactivate = "CSCOMMAND:" + config.Freeswitch.id + ":profileactivate";
     downloadfile = "CSCOMMAND:" + config.Freeswitch.id + ":downloadfile";
     rescangateways = "CSCOMMAND:" + config.Freeswitch.id + "rescangateway";
-}
 
 
 

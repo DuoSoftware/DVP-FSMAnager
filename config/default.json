@@ -7,11 +7,7 @@
         "rtpendport": 22222,
         "port": 8021,
         "password": "devadmin",
-        "profilePath": "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug/conf/sip_profiles",
-        "DummyProfile": "E://DUMMY.xml",
-        "soundFilePath": "E://",
-        "freeswitchpath": "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug",
-        "confPath": "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug/conf"
+        "freeswitchpath": "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug"
     },
 
     "Redis" : {
@@ -30,8 +26,10 @@
 
     "Services" : {
 
-        "fileService": "http://192.168.0.22:8081/DVP/API/6.0/FIleService/FileHandler/DownloadFile/",
-        "profileService": "http://localhost:3000/DVP/API/1.0/CloudConfiguration/Profile"
+        "fileService": "http://192.168.0.22:8081",
+        "fileServiceVersion": "1.0",
+        "profileService": "http://localhost:3000",
+        "profileServiceVersion": "1.0"
 
     }
 }
