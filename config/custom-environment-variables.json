@@ -1,0 +1,36 @@
+{
+  "Freeswitch" : {
+    "id": "FS_ID",
+    "ip": "FS_HOST",
+    "publicip": "FS_EXTERNALIP",
+    "rtpstartport": "FS_RTPSTARTPORT",
+    "rtpendport": "FS_RTPENDPORT",
+    "port": "FS_PORT",
+    "password": "FS_PASSWORD",
+    "freeswitchpath": "FS_PATH"
+  },
+
+  "Redis" : {
+    "ip": "REDIS_IP",
+    "port": "REDIS_PORT"
+  },
+
+  "DB": {
+    "Type":"DB_TYPE",
+    "User":"DB_USER",
+    "Password":"DB_PASSWORD",
+    "Port":"DB_PORT",
+    "Host":"DB_HOST",
+    "Database":"DB_BASE"
+  },
+
+  "Services" : {
+
+    "fileService": "SYS_SERVICE_FILE",
+    "profileService": "SYS_SERVICE_PROFILE",
+    "fileServiceVersion": "SYS_SERVICE_FILE_VERSION",
+    "profileServiceVersion": "SYS_SERVICE_PROFILE_VERSION"
+
+
+  }
+}
