@@ -9,7 +9,7 @@ var request = require('request');
 var format = require('stringformat');
 var esl = require('modesl');
 var jsxml = require("node-jsxml");
-//var http = require('http');
+var logger = require('DVP-Common/LogHandler/CommonLogHandler.js').logger;
 
 
 var Namespace = jsxml.Namespace,
@@ -57,19 +57,30 @@ redisClient.on('message', function (channel, message) {
     //var id = int.parse(message);
 
 
+    logger.debug("DVP-FSManager.redisClient REDIS PUBLISHED %s", message);
+
+
     if(channel == channelvalue) {
+
+
 
         //var profilrService = config.Services.profileService;
         var url = format("{0}/{1}",profilrService,parseInt(message));
+
+
+        logger.debug("DVP-FSManager.redisClient FS Profile Create Request Recived try URL %s ", url);
 
         request(url, function(err, response, body){
 
             if(err){
 
-                console.log("Get profile data false", err);
+                logger.error("DVP-FSManager.redisClient Request Get Profile failed ", err);
             }else{
 
                 var nwProfile = JSON.parse( response.body);
+
+
+                logger.debug("DVP-FSManager.redisClient Request Get Profile %j", nwProfile);
 
                 try {
                     if (nwProfile && nwProfile.ProfileName != "DUMMY") {
@@ -82,90 +93,114 @@ redisClient.on('message', function (channel, message) {
 
                             if (!exists) {
 
+                                logger.debug("DVP-FSManager.redisClient %s File not exist", newprofile);
+
                                 fs.readFile(profile, "utf-8", function (err, data) {
 
-                                    try {
 
-                                        var xml = new XML(data);
-                                        xml.attributes('name').setValue(nwProfile.ProfileName);
-                                        var child = xml.child("settings");
-                                        var descendants = child.descendants('param');
-                                        var value = descendants.each(function (obj, index) {
+                                    if(!err) {
+                                        logger.debug("DVP-FSManager.redisClient %s Read File", profile);
 
-                                            if (obj.attribute('name').toXMLString() == 'sip-ip') {
-                                                var val = obj.attribute('value');
-                                                if(nwProfile.InternalIp) {
-                                                    obj.attribute('value').setValue(nwProfile.InternalIp);
+
+                                        try {
+
+                                            var xml = new XML(data);
+
+                                            logger.debug("DVP-FSManager.redisClient CONFIG SetProfileName %s", nwProfile.ProfileName);
+
+                                            xml.attributes('name').setValue(nwProfile.ProfileName);
+                                            var child = xml.child("settings");
+                                            var descendants = child.descendants('param');
+                                            var value = descendants.each(function (obj, index) {
+
+                                                if (obj.attribute('name').toXMLString() == 'sip-ip') {
+                                                    var val = obj.attribute('value');
+                                                    if (nwProfile.InternalIp) {
+                                                        obj.attribute('value').setValue(nwProfile.InternalIp);
+                                                        logger.debug("DVP-FSManager.redisClient CONFIG SetSIPIP %s", nwProfile.InternalIp);
+                                                    }
                                                 }
-                                            }
 
-                                            if (obj.attribute('name').toXMLString() == 'rtp-ip') {
-                                                var val = obj.attribute('value');
-                                                if(nwProfile.InternalRtpIp) {
-                                                    obj.attribute('value').setValue(nwProfile.InternalRtpIp);
+                                                if (obj.attribute('name').toXMLString() == 'rtp-ip') {
+                                                    var val = obj.attribute('value');
+                                                    if (nwProfile.InternalRtpIp) {
+                                                        obj.attribute('value').setValue(nwProfile.InternalRtpIp);
+                                                        logger.debug("DVP-FSManager.redisClient CONFIG SetRTPIP %s", nwProfile.InternalRtpIp);
+                                                    }
                                                 }
-                                            }
 
-                                            if (obj.attribute('name').toXMLString() == 'ext-sip-ip') {
-                                                var val = obj.attribute('value');
-                                                if (nwProfile.ExternalIp) {
-                                                    obj.attribute('value').setValue(nwProfile.ExternalIp);
+                                                if (obj.attribute('name').toXMLString() == 'ext-sip-ip') {
+                                                    var val = obj.attribute('value');
+                                                    if (nwProfile.ExternalIp) {
+                                                        obj.attribute('value').setValue(nwProfile.ExternalIp);
+                                                        logger.debug("DVP-FSManager.redisClient CONFIG SetExternalSIPIP %s", nwProfile.ExternalIp);
+                                                    }
                                                 }
-                                            }
 
-                                            if (obj.attribute('name').toXMLString() == 'ext-rtp-ip') {
-                                                var val = obj.attribute('value');
-                                                if (nwProfile.ExternalIp) {
-                                                    obj.attribute('value').setValue(nwProfile.ExternalRtpIp);
+                                                if (obj.attribute('name').toXMLString() == 'ext-rtp-ip') {
+                                                    var val = obj.attribute('value');
+                                                    if (nwProfile.ExternalIp) {
+                                                        obj.attribute('value').setValue(nwProfile.ExternalRtpIp);
+
+                                                        logger.debug("DVP-FSManager.redisClient CONFIG SetExternalRTPIP %s", nwProfile.ExternalRtpIp);
+                                                    }
                                                 }
-                                            }
 
-                                            if (obj.attribute('name').toXMLString() == 'sip-port') {
-                                                var val = obj.attribute('value');
-                                                if(nwProfile.Port) {
-                                                    obj.attribute('value').setValue(nwProfile.Port);
+                                                if (obj.attribute('name').toXMLString() == 'sip-port') {
+                                                    var val = obj.attribute('value');
+                                                    if (nwProfile.Port) {
+                                                        obj.attribute('value').setValue(nwProfile.Port);
+
+                                                        logger.debug("DVP-FSManager.redisClient CONFIG SetExternalSIPPORT %s", nwProfile.Port);
+                                                    }
                                                 }
-                                            }
 
 
-                                        });
+                                            });
 
-                                        var xmldata = xml.toXMLString();
-                                        console.log(xmldata);
+                                            var xmldata = xml.toXMLString();
+                                            console.log(xmldata);
 
-                                        fs.outputFile(newprofile, xmldata, function (err) {
+                                            fs.outputFile(newprofile, xmldata, function (err) {
 
-                                            if (err) {
-                                                console.log(err);
+                                                if (err) {
+                                                    logger.error("DVP-FSManager.redisClient CONFIG Output failed", err);
 
-                                            } else {
+                                                } else {
+
+                                                    logger.debug("DVP-FSManager.redisClient CONFIG Output worked");
+
+                                                    setTimeout(function () {
+
+                                                        var command = format("http://{0}:8080/api/sofia? profile {1} start", "localhost", nwProfile.ProfileName);
+                                                        console.log(command);
+                                                        request(command, function (error, response, body) {
+                                                            if (!error && response.statusCode == 200) {
+                                                                logger.debug("DVP-FSManager.redisClient FS Reload Profile %s", response.body);
+                                                            }
+                                                            else {
+
+                                                                logger.debug("DVP-FSManager.redisClient FS Reload Profile failed", err);
+                                                            }
+                                                        })
+                                                    }, 10 * 1000);
+                                                }
+                                            });
+                                        } catch (exx) {
+
+                                            console.log(exx);
+                                        }
+                                    }else{
+
+                                        logger.error("DVP-FSManager.redisClient %s Read File failed", profile, err);
 
 
-                                                setTimeout(function () {
-
-                                                    var command = format("http://{0}:8080/api/sofia? profile {1} start", "localhost", nwProfile.ProfileName);
-                                                    console.log(command);
-                                                    request(command, function (error, response, body) {
-                                                        if (!error && response.statusCode == 200) {
-                                                            console.log(body);
-                                                        }
-                                                        else {
-
-                                                            console.log("reload fail");
-                                                        }
-                                                    })
-                                                }, 10 * 1000);
-                                            }
-                                        });
-                                    }catch(exx){
-
-                                        console.log(exx);
                                     }
                                 });
                             }
                             else {
 
-                                console.log("Profile is available ---->");
+                                logger.error("DVP-FSManager.redisClient Profile is avalable");
                             }
                         });
 
@@ -201,12 +236,14 @@ redisClient.on('message', function (channel, message) {
                 var filepath = format("{0}/{1}", fileLocation, fileData.filename);
                 var remoteFileLocation = format("{0}/{1}",fileservice,fileData.id);
 
+                logger.debug("DVP-FSManager.redisClient FS FileDownload try URL %s to %s ", remoteFileLocation, filepath);
+
                 request(remoteFileLocation).pipe(fs.createWriteStream(filepath)).on('error', function(e){console.log(e)});
 
             }
             catch(ex){
 
-                console.log(ex);
+                logger.error("DVP-FSManager.redisClient FS FileDownload failed",err);
             }
         }else{
 
@@ -230,11 +267,11 @@ redisClient.on('message', function (channel, message) {
                 console.log(command);
                 request(command, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
-                        console.log(body);
+                        logger.debug("DVP-FSManager.redisClient FS Reload Gateway %s", response.body);
                     }
                     else {
 
-                        console.log("reload fail");
+                        logger.error("DVP-FSManager.redisClient FS Reload Gateway failed", error);
                     }
                 });
 

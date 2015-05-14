@@ -4,6 +4,7 @@
   "description": "",
   "main": "InitConfig.js",
   "dependencies": {
+    "DVP-Common": "DuoSoftware/DVP-Common",
     "fs-extra": "^0.16.5",
     "redis": "^0.12.1",
     "node-jsxml": "^0.6.0",
