@@ -1,5 +1,5 @@
 #!/bin/bash
-nodejs /usr/local/src/fsmanager/InitConfig.js
+#nodejs /usr/local/src/fsmanager/InitConfig.js
 #sh /usr/local/src/autoloadconfig.sh
 sh /usr/local/src/moduleenable.sh
 service freeswitch start
