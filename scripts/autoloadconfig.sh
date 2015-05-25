@@ -8,13 +8,20 @@ sed -i 's^</bindings>^<binding name="directory"><param name="gateway-url" value=
 sed -i 's^<param name="ext-rtp-ip" value="auto-nat"/>^<param name="ext-rtp-ip" value="'$FS_EXTERNALIP'"/>^g; s^<param name="ext-sip-ip" value="auto-nat"/>^<param name="ext-sip-ip" value="'$FS_EXTERNALIP'"/>^g' /usr/local/src/xml/internal.xml;
 sed -i 's^<param name="ext-rtp-ip" value="auto-nat"/>^<param name="ext-rtp-ip" value="'$FS_EXTERNALIP'"/>^g; s^<param name="ext-sip-ip" value="auto-nat"/>^<param name="ext-sip-ip" value="'$FS_EXTERNALIP'"/>^g' /usr/local/src/xml/external.xml;
 sed -i 's^<domain name="$${domain}">^<domain name="'$FS_EXTERNALIP'">^g' /usr/local/src/xml/default.xml;
-cp /usr/local/src/xml/event_socket.conf.xml /usr/local/freeswitch/conf/autoload_configs/;
-cp /usr/local/src/xml/switch.conf.xml /usr/local/freeswitch/conf/autoload_configs/;
-cp /usr/local/src/xml/xml_rpc.conf.xml /usr/local/freeswitch/conf/autoload_configs/;
-cp /usr/local/src/xml/xml_curl.conf.xml /usr/local/freeswitch/conf/autoload_configs/;
-cp /usr/local/src/xml/default.xml /usr/local/freeswitch/conf/directory/;
-cp /usr/local/src/xml/internal.xml /usr/local/freeswitch/conf/sip_profiles/;
-cp /usr/local/src/xml/external.xml /usr/local/freeswitch/conf/sip_profiles/;
+rm -f /usr/local/freeswitch/conf/autoload_configs/event_socket.conf.xml;
+cp /usr/local/src/xml/event_socket.conf.xml /usr/local/freeswitch/conf/autoload_configs/event_socket.conf.xml;
+rm -f /usr/local/freeswitch/conf/autoload_configs/switch.conf.xml;
+cp /usr/local/src/xml/switch.conf.xml /usr/local/freeswitch/conf/autoload_configs/switch.conf.xml;
+rm -f /usr/local/freeswitch/conf/autoload_configs/xml_rpc.conf.xml;
+cp /usr/local/src/xml/xml_rpc.conf.xml /usr/local/freeswitch/conf/autoload_configs/xml_rpc.conf.xml;
+rm -f /usr/local/freeswitch/conf/autoload_configs/xml_curl.conf.xml;
+cp /usr/local/src/xml/xml_curl.conf.xml /usr/local/freeswitch/conf/autoload_configs/xml_curl.conf.xml;
+rm -f /usr/local/freeswitch/conf/directory/default.xml;
+cp /usr/local/src/xml/default.xml /usr/local/freeswitch/conf/directory/default.xml;
+rm -f /usr/local/freeswitch/conf/sip_profiles/internal.xml;
+cp /usr/local/src/xml/internal.xml /usr/local/freeswitch/conf/sip_profiles/internal.xml;
+rm -f /usr/local/freeswitch/conf/sip_profiles/external.xml;
+cp /usr/local/src/xml/external.xml /usr/local/freeswitch/conf/sip_profiles/external.xml;
 
 
 
