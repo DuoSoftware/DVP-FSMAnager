@@ -20,7 +20,7 @@ cp /usr/local/src/xml/default.xml /usr/local/freeswitch/conf/directory/default.x
 rm -f /usr/local/freeswitch/conf/sip_profiles/internal.xml;
 cp /usr/local/src/xml/internal.xml /usr/local/freeswitch/conf/sip_profiles/internal.xml;
 rm -f /usr/local/freeswitch/conf/sip_profiles/external.xml;
-cp /usr/local/src/xml/external.xml /usr/local/freeswitch/conf/sip_profiles/external.xml
+cp /usr/local/src/xml/external.xml /usr/local/freeswitch/conf/sip_profiles/external.xml;
 
 
 
