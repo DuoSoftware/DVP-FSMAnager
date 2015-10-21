@@ -1,6 +1,6 @@
 {
     "Freeswitch" : {
-        "id": 1,
+        "id": 7,
         "ip": "localhost",
         "publicip": "10.10.101.10",
         "rtpstartport": 11111,
@@ -11,7 +11,7 @@
     },
 
     "Redis" : {
-        "ip": "192.168.3.200",
+        "ip": "45.55.179.9",
         "port": 6379
     },
 
@@ -26,10 +26,12 @@
 
     "Services" : {
 
-        "fileService": "http://192.168.0.22:8081",
-        "fileServiceVersion": "1.0",
+
+
+        "fileService": "http://45.55.179.9:8860",
+        "fileServiceVersion": "1.0.0",
         "profileService": "http://localhost:3000",
-        "profileServiceVersion": "1.0"
+        "profileServiceVersion": "1.0.0.0"
 
     }
 }

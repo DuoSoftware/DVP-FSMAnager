@@ -57,7 +57,7 @@ redisClient.on('message', function (channel, message) {
     //var id = int.parse(message);
 
 
-    logger.debug("DVP-FSManager.redisClient REDIS PUBLISHED %s", message);
+    logger.debug("DVP-FSManager.redisClient REDIS Subscribe %s", message);
 
 
     if(channel == channelvalue) {
@@ -232,9 +232,13 @@ redisClient.on('message', function (channel, message) {
                 var fileData = JSON.parse(message);
 
                 var companyLocation = format("{0}_{1}",fileData.tenent, fileData.company);
+
+                var ext = fileData.type.split(/[/]+/).pop();
+
                 var fileLocation = format("{0}{1}",soundpath,companyLocation);
-                var filepath = format("{0}/{1}", fileLocation, fileData.filename);
+                var filepath = format("{0}/{1}.{2}", soundpath, fileData.id,ext);
                 var remoteFileLocation = format("{0}/{1}",fileservice,fileData.id);
+
 
                 logger.debug("DVP-FSManager.redisClient FS FileDownload try URL %s to %s ", remoteFileLocation, filepath);
 
