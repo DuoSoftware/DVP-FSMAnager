@@ -6,8 +6,9 @@
         "rtpstartport": 11111,
         "rtpendport": 22222,
         "port": 8021,
-        "password": "devadmin",
-        "freeswitchpath": "F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug"
+        "password": "cluecon",
+        "freeswitchpath": "usr/local/freeswitch"
+        //F:/sukitha/Projects/freeswitch-1.4.0.beta3/freeswitch-1.4.0.beta3/freeswitch-1.4.0/Win32/Debug
     },
 
     "Redis" : {
@@ -28,9 +29,11 @@
 
 
 
-        "fileService": "http://45.55.179.9:8860",
-        "fileServiceVersion": "1.0.0",
-        "profileService": "http://localhost:3000",
+        "fileService": "45.55.179.9",
+        "fileServiceVersion": "1.0.0.0",
+        "fileServiceport":"8860",
+        "profileService": "localhost",
+        "profileServiceport": "3000",
         "profileServiceVersion": "1.0.0.0"
 
     }

@@ -11,25 +11,27 @@
   },
 
   "Redis" : {
-    "ip": "REDIS_IP",
-    "port": "REDIS_PORT"
+    "ip": "SYS_REDIS_HOST",
+    "port": "SYS_REDIS_PORT"
   },
 
   "DB": {
-    "Type":"DB_TYPE",
-    "User":"DB_USER",
-    "Password":"DB_PASSWORD",
-    "Port":"DB_PORT",
-    "Host":"DB_HOST",
-    "Database":"DB_BASE"
+    "Type":"SYS_DATABASE_TYPE",
+    "User":"SYS_DATABASE_POSTGRES_USE",
+    "Password":"SYS_DATABASE_POSTGRES_PASSWORD",
+    "Port":"SYS_DATABASE_POSTGRES_USE",
+    "Host":"SYS_DATABASE_HOST",
+    "Database":"SYS_DATABASE_POSTGRES_USE"
   },
 
   "Services" : {
 
-    "fileService": "SYS_SERVICE_FILE",
-    "profileService": "SYS_SERVICE_PROFILE",
-    "fileServiceVersion": "SYS_SERVICE_FILE_VERSION",
-    "profileServiceVersion": "SYS_SERVICE_PROFILE_VERSION"
+    "fileService": "SYS_FILESERVICE_HOST",
+    "fileServiceport":"SYS_FILESERVICE_PORT",
+    "profileService": "SYS_CLUSTERCONFIGURATION_HOST",
+    "profileServiceport": "SYS_CLUSTERCONFIGURATION_PORT",
+    "fileServiceVersion": "SYS_FILESERVICE_VERSION",
+    "profileServiceVersion": "SYS_CLUSTERCONFIGURATION_VERSION"
 
 
   }

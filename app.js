@@ -9,7 +9,8 @@ var request = require('request');
 var format = require('stringformat');
 var esl = require('modesl');
 var jsxml = require("node-jsxml");
-var logger = require('DVP-Common/LogHandler/CommonLogHandler.js').logger;
+var logger = require('dvp-common/LogHandler/CommonLogHandler.js').logger;
+var validator = require('validator');
 
 
 var Namespace = jsxml.Namespace,
@@ -24,10 +25,28 @@ var redishost,profilrService, profilepath, soundpath, fileservice, channelvalue,
 
     redishost = config.Redis.ip;
     redisport = config.Redis.port;
-    profilrService = format("{0}/DVP/API/{1}/CloudConfiguration/Profile", config.Services.profileService, config.Services.profileServiceVersion);
+
+
+///DVP/API/:version/CloudConfiguration/Profile
+
+    profilrService = format("http://{0}/DVP/API/{1}/CloudConfiguration/Profile", config.Services.profileService, config.Services.profileServiceVersion);
+    if(validator.isIP(config.Services.profileService))
+        profilrService = format("http://{0}:{1}/DVP/API/{2}/CloudConfiguration/Profile", config.Services.profileService,config.Services.profileServiceport, config.Services.profileServiceVersion);
+
+
+
     profilepath = format("{0}/{1}", config.Freeswitch.freeswitchpath, "/conf/sip_profiles/");
     soundpath = format("{0}/{1}", config.Freeswitch.freeswitchpath, "/sounds/");
-    fileservice = format("{0}/DVP/API/{1}/FIleService/FileHandler/DownloadFile", config.Services.fileService,config.Services.fileServiceVersion);
+
+
+//http://{0}/DVP/API/{1}/FileService/File/
+    fileservice = format("http://{0}/DVP/API/{1}/FileService/File/Download", config.Services.fileService,config.Services.fileServiceVersion);
+
+    if(validator.isIP(config.Services.fileService))
+        fileservice = format("http://{0}:{1}/DVP/API/{2}/FileService/File/Download", config.Services.fileService,config.Services.fileServiceport,config.Services.fileServiceVersion);
+
+
+
 
     channelvalue = "CSCOMMAND:" + config.Freeswitch.id + ":profile";
     channelactivate = "CSCOMMAND:" + config.Freeswitch.id + ":profileactivate";
